@@ -6,10 +6,12 @@ from prettytable import PrettyTable
 def menu():
 
     print("Following will be printed in order for the given schedule: ")
+    print()
     print("1. Print schedule chart")
     print("2. Check if the given schedule is serial")
     print("3. Check if the given schedule is conflict serializable")
     print("4. Check if the given schedule is view serializable")
+    print()
 
 
 def txn_print(*txns):
@@ -37,7 +39,9 @@ def txn_value():
         txn_num = int(input("Enter number of transactions: "))
 
         if txn_num == 0:
-            print("\nC'mon! Stop fooling around, Enter a non-zero value.\n")
+            print()
+            print("C'mon! Stop fooling around, Enter a non-zero value.")
+            print()
             continue
 
         for _ in range(txn_num):
@@ -53,19 +57,26 @@ def txn_value():
             break
 
         if choice[0].lower != 't' and int(choice[1]) > txn_num and len(choice) > 2:
-            print("\nTransaction doesn't exist, try again!\n")
+            print()
+            print("Transaction doesn't exist, try again!")
+            print()
             continue
 
         action = input(f"\nEnter action Read(R/r) or Write(W/w) for {choice.upper()}: ").upper()
 
         if action.lower() != 'r' and action.lower() != 'w':
-            print("\nYou can't do that here!\nStart over!!!\n")
+            print()
+            print("You can't do that here!\nStart over!!!")
+            print()
             continue
 
-        data_item = input(f"\nEnter any english letter as data_item for the {action}: ").upper()
+        print()
+        data_item = input(f"Enter any english letter as data_item for the {action}: ").upper()
 
         if not data_item.isalpha():
-            print("\nInvalid input.\nStart over!!!\n")
+            print()
+            print("Invalid input.\nStart over!!!")
+            print()
             continue
 
         actions[int(choice[1]) - 1].append(action)
@@ -115,11 +126,13 @@ def txn_serial_check(*txns):
 
     if not error:
         print("The given schedule is serial schedule ")
+        print()
         plt.title("Serial Schedule", fontsize=10, color="red")
         nx.draw(graph, with_labels=True, node_size=1500, font_size=20, font_color="yellow", font_weight="bold", connectionstyle='arc3, rad = 0.1')
         plt.show()
     else:
         print("The given schedule is not a serial schedule.")
+        print()
         plt.title("NOT a Serial Schedule", fontsize=10, color="red")
         nx.draw(graph, with_labels=True, node_size=1500, font_size=20, font_color="yellow", font_weight="bold", connectionstyle='arc3, rad = 0.1')
         plt.show()
@@ -128,8 +141,8 @@ def txn_serial_check(*txns):
 def blind_write(dataset, *txns):
 
     for d in dataset:
-        read_check = 0
         for i in range(len(txns)):
+            read_check = 0
             for j in range(len(txns[0])):
                 if txns[i][j] == "*":
                     continue
@@ -192,18 +205,20 @@ def txn_conflict_serial(*txns):
         nx.find_cycle(graph)
         plt.title("Not Conflict Serializable", fontsize=10, color="red")
         print("This schedule is not Conflict Serializable.")
+        print()
         nx.draw(graph, with_labels=True, node_size=1500, font_size=20, font_color="yellow", font_weight="bold", connectionstyle='arc3, rad = 0.1')
         plt.show()
         return 1, graph
     except nx.exception.NetworkXNoCycle:
         plt.title(f"Conflict Serializable: <{','.join(nx.topological_sort(graph))}>", fontsize=10, color="red")
         print(f"This schedule is Conflict Serializable and Conflict Equivalent to <{','.join(nx.topological_sort(graph))}>")
+        print()
         nx.draw(graph, with_labels=True, node_size=1500, font_size=20, font_color="yellow", font_weight="bold", connectionstyle='arc3, rad = 0.1')
         plt.show()
         return 0, ""
 
 
-def txn_view_serial(conflict_status, G,  *txns):
+def txn_view_serial(conflict_status, graph_status, *txns):
 
     dataset = set([txns[i][j][2] for i in range(len(txns)) for j in range(len(txns[0])) if txns[i][j] != "*"])
     edges = list()
@@ -242,7 +257,8 @@ def txn_view_serial(conflict_status, G,  *txns):
 
     if conflict_status and not blind_write(dataset, *txns):
         graph.clear()
-        graph = G
+        print("There is no Blind Write!")
+        graph = graph_status
 
     try:
         nx.planar_layout(graph)
@@ -253,10 +269,12 @@ def txn_view_serial(conflict_status, G,  *txns):
         nx.find_cycle(graph)
         plt.title("Not View Serializable", fontsize=10, color="red")
         print("This schedule is not View Serializable.")
+        print()
         nx.draw(graph, with_labels=True, node_size=1500, font_size=20, font_color="yellow", font_weight="bold", connectionstyle='arc3, rad = 0.1')
     except nx.exception.NetworkXNoCycle:
         plt.title(f"View Serializable: <{','.join(nx.topological_sort(graph))}>", fontsize=10, color="red")
         print(f"This schedule is View Serializable and View Equivalent to <{','.join(nx.topological_sort(graph))}>")
+        print()
         nx.draw(graph, with_labels=True, node_size=1500, font_size=20, font_color="yellow", font_weight="bold", connectionstyle='arc3, rad = 0.1')
 
     plt.show()
@@ -268,7 +286,7 @@ if __name__ == "__main__":
         sel = input("Enter any key to continue or X to exit: ").lower()
         if sel == 'x':
             break
-        print("Please follow the instructions to enter your values for schedule: ")
+        print("Please follow the instructions to enter your values for schedule.\n")
         schedule = txn_value()
 
         txn_print(*schedule)
