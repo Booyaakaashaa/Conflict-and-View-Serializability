@@ -1,3 +1,5 @@
+__author__ = "Shubham Sharma"
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from prettytable import PrettyTable
